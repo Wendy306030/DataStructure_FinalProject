@@ -26,7 +26,8 @@ public class LinkList {
 		
 
 	}
-	
+
+	//計算link裡的分數
 	public void sum(Link li) throws IOException {
 		
 		WordCounter wordCount =new WordCounter(li.getUrl());
