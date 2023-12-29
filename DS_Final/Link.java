@@ -1,4 +1,3 @@
-
 public class Link {
 	public String title;
 	public String url;
@@ -22,6 +21,9 @@ public class Link {
 		this.score+=score;
 	}
 	
+	public int getScore () {
+		return score;
+	}
 	
 
 }
