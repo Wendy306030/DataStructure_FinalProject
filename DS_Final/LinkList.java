@@ -3,10 +3,12 @@ import java.util.ArrayList;
 
 public class LinkList {
 	public ArrayList<Link> linkList;
+	public KeywordList kLst;
 	
 	
-	public LinkList() {
+	public LinkList(KeywordList kLst) {
 		linkList=new ArrayList<Link>();
+		this.kLst=kLst;
 	}
 	
 	public void add(Link link) {
@@ -19,15 +21,20 @@ public class LinkList {
 			System.out.println(li.getTitle());
 			System.out.println(li.getUrl());
 			sum(li);
+			System.out.println(li.score);
 		}
+		
 
 	}
 	
 	public void sum(Link li) throws IOException {
 		
 		WordCounter wordCount =new WordCounter(li.getUrl());
-		int test=wordCount.countKeyword("遊戲");
-		System.out.println(test);
+		
+		for(int i=0;i<kLst.lst.size();i++) {
+			int wordNum=wordCount.countKeyword(kLst.lst.get(i).getName());
+			li.setScore(wordNum*kLst.lst.get(i).getWeight());
+		}
 		
 	}
 

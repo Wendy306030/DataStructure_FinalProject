@@ -17,11 +17,14 @@ public class GoogleQuery
 	public String searchKeyword;
 	public String url;
 	public String content;
-	public LinkList linkList = new LinkList();
+	public LinkList linkList;
+	public KeywordList kLst;
 	
-	public GoogleQuery(String searchKeyword)
+	public GoogleQuery(String searchKeyword, KeywordList kLst)
 	{
 		this.searchKeyword = searchKeyword;
+		this.kLst=kLst;
+		linkList=new LinkList(kLst);
 		try 
 		{
 			// This part has been specially handled for Chinese keyword processing. 

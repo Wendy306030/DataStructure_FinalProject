@@ -1,11 +1,11 @@
 public class Keyword {
 	public String name;
     public int count;
-    public float weight;
+    public int weight;
     
-    public Keyword(String name, int count, float weight){
+    public Keyword(String name, int weight){
 		this.name = name;
-		this.count = count;
+		this.count = 0;
 		this.weight = weight;
     }
     
@@ -24,8 +24,12 @@ public class Keyword {
     	return name;
     }
     
-    public float getWeight()
+    public int getWeight()
     {
     	return weight;
+    }
+    
+    public void setCount(int count) {
+    	this.count=count;
     }
 }
