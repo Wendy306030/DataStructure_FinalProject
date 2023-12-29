@@ -36,6 +36,8 @@ public class LinkList {
 			int wordNum=wordCount.countKeyword(kLst.lst.get(i).getName());
 			li.setScore(wordNum*kLst.lst.get(i).getWeight());
 		}
+
+	public void getLinkList(){
 		
 	}
 
