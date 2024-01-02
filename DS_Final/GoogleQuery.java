@@ -64,7 +64,7 @@ public class GoogleQuery
 		return retVal;
 	}
 	
-	public void query() throws IOException {
+	public LinkList query() throws IOException {
 	    if (content == null) {
 	        content = fetchContent();
 	    }
@@ -79,7 +79,7 @@ public class GoogleQuery
 	        try {
 	            Elements links = li.select("a");
 	            if (links.size() > 0) {
-	            	String citeUrl = extractActualUrl(links.get(0).attr("href"));
+	            	String citeUrl = li.select("a").get(0).attr("href");
 	                String title = links.get(0).select(".vvjwJb").text();
 
 	                if (title.equals("")) {
@@ -94,8 +94,8 @@ public class GoogleQuery
 	        }
 	    }
 	    
-	    
-	    linkList.printresult();	 
+	    linkList.sort();
+	    return linkList;	 
 	}
 	
 	private String extractActualUrl(String url) {

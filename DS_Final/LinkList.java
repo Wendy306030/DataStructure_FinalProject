@@ -23,12 +23,16 @@ public class LinkList {
 		for(Link li:linkList) {
 			sum(li);
 		}
-		linkList.sort(Comparator.comparingInt(Link::getScore).reversed());
+		
 		
 		System.out.println("Sorted by Score:");
 		for(Link li : linkList) {
 			System.out.println(li.getTitle()+"\n"+li.getUrl()+"\n"+"   ～   "+li.getScore());
 		}
+	}
+	
+	public void sort() {
+		linkList.sort(Comparator.comparingInt(Link::getScore).reversed());
 	}
 
 	//計算link裡的分數
@@ -44,6 +48,11 @@ public class LinkList {
 		li.setScore(totalScore);
 	
 		
+	}
+
+	public int size() {
+		// TODO Auto-generated method stub
+		return linkList.size();
 	}
 
 }
