@@ -74,7 +74,7 @@ public class TestProject extends HttpServlet {
 		int num = 0;
 		for(int i=0;i<query.size();i++) {
 		    String key = query.linkList.get(i).getTitle();
-		    String value = query.linkList.get(i).getUrl();
+		    String value = "https:/"+query.linkList.get(i).getUrl();
 		    s[num][0] = key;
 		    s[num][1] = value;
 		    num++;

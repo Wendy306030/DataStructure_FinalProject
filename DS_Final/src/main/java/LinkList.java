@@ -19,35 +19,37 @@ public class LinkList {
 	
 	
 	public void printresult() throws IOException {
-		
-		for(Link li:linkList) {
-			sum(li);
-		}
-		
-		
+			
 		System.out.println("Sorted by Score:");
 		for(Link li : linkList) {
 			System.out.println(li.getTitle()+"\n"+li.getUrl()+"\n"+"   ～   "+li.getScore());
 		}
 	}
 	
-	public void sort() {
+	public void sort() throws IOException {
+		
+		for(Link li:linkList) {
+			sum(li);
+		}
 		linkList.sort(Comparator.comparingInt(Link::getScore).reversed());
 	}
 
 	//計算link裡的分數
-	public void sum(Link li) throws IOException {
+	public void sum(Link li) {
 		
 		WordCounter wordCount =new WordCounter(li.getUrl());
 		int totalScore = 0;
 		
-		for(int i=0;i<kLst.lst.size();i++) {
-			int wordNum=wordCount.countKeyword(kLst.lst.get(i).getName());
-			li.setScore(wordNum*kLst.lst.get(i).getWeight());
+		try{
+			for(int i=0;i<kLst.lst.size();i++) {
+				int wordNum=wordCount.countKeyword(kLst.lst.get(i).getName());
+				li.setScore(wordNum*kLst.lst.get(i).getWeight());
+			}
+		}
+		catch(IOException e){
+			
 		}
 		li.setScore(totalScore);
-	
-		
 	}
 
 	public int size() {

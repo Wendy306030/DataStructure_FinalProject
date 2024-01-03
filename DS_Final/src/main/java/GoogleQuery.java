@@ -79,7 +79,7 @@ public class GoogleQuery
 	        try {
 	            Elements links = li.select("a");
 	            if (links.size() > 0) {
-	            	String citeUrl = "https:/"+extractActualUrl(links.get(0).attr("href"));
+	            	String citeUrl = extractActualUrl(links.get(0).attr("href"));
 	                String title = links.get(0).select(".vvjwJb").text();
 
 	                if (title.equals("")) {
