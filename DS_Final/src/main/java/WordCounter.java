@@ -17,21 +17,26 @@ public class WordCounter
 
 	private String fetchContent() throws IOException
 	{
-		URL url = new URL(this.urlStr);
-		URLConnection conn = url.openConnection();
-		InputStream in = conn.getInputStream();
-		BufferedReader br = new BufferedReader(new InputStreamReader(in));
-
-		String retVal = "";
-
-		String line = null;
-
-		while ((line = br.readLine()) != null)
-		{
-			retVal = retVal + line + "\n";
-		}
-
-		return retVal;
+		try {
+			URL url = new URL(this.urlStr);
+			URLConnection conn = url.openConnection();
+			InputStream in = conn.getInputStream();
+			BufferedReader br = new BufferedReader(new InputStreamReader(in));
+		
+			String retVal = "";
+		
+			String line = null;
+			
+			while ((line = br.readLine()) != null){
+			    retVal = retVal + line + "\n";
+			}
+		
+			return retVal;
+	    	}catch(IOException e) {
+	    	    e.printStackTrace();
+	    	    System.out.println("Error fetching content from URL: " + this.urlStr);
+	    	    return ""; // 或者采取其他处理方式
+	    	}
 	}
 
 	public int countKeyword(String keyword) throws IOException

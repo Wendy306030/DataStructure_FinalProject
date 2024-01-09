@@ -1,10 +1,12 @@
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLDecoder;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.jsoup.Jsoup;
@@ -17,14 +19,12 @@ public class GoogleQuery
 	public String searchKeyword;
 	public String url;
 	public String content;
-	public LinkList linkList;
-	public KeywordList kLst;
+	public TreeList treeLst;
 	
-	public GoogleQuery(String searchKeyword, KeywordList kLst)
+	public GoogleQuery(String searchKeyword, ArrayList<Keyword> kLst)
 	{
 		this.searchKeyword = searchKeyword;
-		this.kLst=kLst;
-		linkList=new LinkList(kLst);
+		treeLst=new TreeList(kLst);
 		try 
 		{
 			// This part has been specially handled for Chinese keyword processing. 
@@ -64,7 +64,34 @@ public class GoogleQuery
 		return retVal;
 	}
 	
-	public LinkList query() throws IOException {
+	public String fetchHTML(String url) throws IOException {
+	    StringBuilder contentBuilder = new StringBuilder();
+
+	    try {
+	        URL u = new URL(url);
+	        URLConnection conn = u.openConnection();
+	        conn.setRequestProperty("User-agent", "Chrome/107.0.5304.107");
+
+	        try (InputStream in = conn.getInputStream();
+	             InputStreamReader inReader = new InputStreamReader(in, "utf-8");
+	             BufferedReader bufReader = new BufferedReader(inReader)) {
+
+	            String line;
+	            while ((line = bufReader.readLine()) != null) {
+	                contentBuilder.append(line);
+	            }
+	        }
+	    } catch (FileNotFoundException e) {
+	        System.err.println("File not found: " + url);
+	    } catch (IOException e) {
+	        System.err.println("Error fetching HTML from " + url + ": " + e.getMessage());
+	    }
+
+	    return contentBuilder.toString();
+	}
+	
+	
+	public void query() throws IOException {
 	    if (content == null) {
 	        content = fetchContent();
 	    }
@@ -74,7 +101,8 @@ public class GoogleQuery
 
 	    // select particular element(tag) which you want
 	    Elements lis = doc.select("div.kCrYT");
-
+	    
+	    int count = 0;
 	    for (Element li : lis) {
 	        try {
 	            Elements links = li.select("a");
@@ -86,18 +114,44 @@ public class GoogleQuery
 	                    continue;
 	                }
 
-	                Link link = new Link(title, citeUrl);
-	                linkList.add(link);
+	                WebPage rootPage = new WebPage(citeUrl, title);		
+	        		WebTree tree = new WebTree(rootPage);
+	        		
+	        		try {
+	                    String htmlContent = fetchHTML(citeUrl);
+	                    Document doc1 = Jsoup.parse(htmlContent);
+	                    Elements lis1 = doc1.select("a");
+	                    for (Element link : lis1) {
+	                        String subpageUrl = link.attr("href");
+	                        if (isValidSubpage(subpageUrl)) {
+	                            tree.root.addChild(new WebNode(new WebPage(subpageUrl, "SubPage")));
+	                            count++;
+	                            if (count >= 5) {
+	                                break; 
+	                            }
+	                        }
+	                    }
+	                     
+	                } catch (IOException e) {
+	                    e.printStackTrace();
+	                }
+	        		
+	        		
+                    treeLst.add(tree);
 	            }
 	        } catch (IndexOutOfBoundsException e) {
-	            // e.printStackTrace();
+	             e.printStackTrace();
 	        }
 	    }
-	    
-	    linkList.sort();
-	    return linkList;	 
+	    treeLst.sort();
+	    treeLst.printRst();
+	    	 
 	}
 	
+	private boolean isValidSubpage(String subpageUrl) {
+		return subpageUrl.startsWith("https://");
+	}
+
 	private String extractActualUrl(String url) {
 	    // Extract the actual URL from the Google search result URL
 	    int startIdx = url.indexOf("/url?q=");

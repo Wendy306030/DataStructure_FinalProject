@@ -3,6 +3,7 @@
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 import java.util.Map.Entry;
@@ -46,7 +47,7 @@ public class TestProject extends HttpServlet {
 		//讀我們設的關鍵字
 		File file = new File("C:\\Users\\user\\eclipse-workspace\\HW11_111306028_1\\src\\main\\webapp\\input.txt");
 		Scanner scanner = new Scanner(file);
-		KeywordList kLst = new KeywordList();
+		ArrayList<Keyword> kLst = new ArrayList<Keyword>();
 				
 		while(scanner.hasNext()){
 			String cmd = scanner.next();
@@ -67,14 +68,15 @@ public class TestProject extends HttpServlet {
 			scanner.close();
 				
 		GoogleQuery google = new GoogleQuery(request.getParameter("keyword")+"電影評價",kLst);
-		LinkList query = google.query();
+		google.query();
+		TreeList treeList=google.treeLst;
 		
-		String[][] s = new String[query.size()][2];
+		String[][] s = new String[treeList.size()][2];
 		request.setAttribute("query", s);
 		int num = 0;
-		for(int i=0;i<query.size();i++) {
-		    String key = query.linkList.get(i).getTitle();
-		    String value = "https:/"+query.linkList.get(i).getUrl();
+		for(int i=0;i<treeList.size();i++) {
+		    String key = treeList.get(i).root.webPage.name;
+		    String value = "https:/"+treeList.get(i).root.webPage.url;
 		    s[num][0] = key;
 		    s[num][1] = value;
 		    num++;
